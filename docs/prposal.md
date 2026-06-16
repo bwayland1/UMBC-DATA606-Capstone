@@ -6,7 +6,7 @@
 
 ## Prepared for
 
-UMBC Data Science Master Degree Capstone by Dr. Chaojie (Jay) Wang
+UMBC Data Science Master Degree Capstone by Professor Chaojie (Jay) Wang
 
 ## Author Name
 
