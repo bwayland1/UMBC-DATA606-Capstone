@@ -98,7 +98,7 @@ The exact file sizes will be confirmed after the data files are saved locally an
 | Cleaned completed regular season games dataset | 4,175 | 51 | One row per completed regular season NFL game with betting variables and target variables |
 | Full play-by-play dataset | 770,337 | 372 | One row per NFL play |
 | Selected play-by-play dataset | 770,337 | 71 | One row per NFL play using selected relevant columns |
-| Team-game advanced stats dataset | 8,726 | 64 | One row per team per game |
+| Team-game advanced stats dataset | 8,350 | 64 | One row per team per game |
 
 ## Time Period
 
