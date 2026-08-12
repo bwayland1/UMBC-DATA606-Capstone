@@ -20,9 +20,13 @@ https://github.com/bwayland1/UMBC-DATA606-Capstone
 
 https://www.linkedin.com/in/benjamin-wayland-4104701a3/
 
+## Streamlit Application
+
+https://umbc-data606-capstone-nfl-spread-prediction.streamlit.app/
+
 ## PowerPoint Presentation
 
-**To be added after the final presentation pieces are combined.**
+https://docs.google.com/presentation/d/175UoxAa7GC80K6G5Bn4PiiSU_QNvXSVc/edit?usp=drive_link&ouid=113438888042455085201&rtpof=true&sd=true
 
 ## YouTube Presentation
 
@@ -232,15 +236,30 @@ The Random Forest feature screen shows that `market_home_margin` is the most imp
 
 The validation experiment identifies **Ridge Regression using the top 20 Random Forest-ranked features** as the strongest machine-learning configuration on the 2023 validation season.
 
-One implementation detail is important for reproducibility: the later final holdout code selects `feature_importance_df.head(5)`. Therefore, the executed 2024–2025 final holdout model uses these five variables:
+The final holdout model and the historical walk-forward workflow now use the same feature-selection rule: **Top 20 Random Forest-selected features with Ridge Regression**. For the fixed 2024–2025 holdout, the 20 selected variables are:
 
 1. `market_home_margin`
 2. `explosive_pass_rate_diff`
 3. `def_pass_success_allowed_diff`
 4. `home_offensive_plays`
 5. `rush_success_rate_diff`
+6. `away_def_rush_success_allowed`
+7. `away_avg_cpoe`
+8. `home_defensive_plays`
+9. `avg_cpoe_diff`
+10. `def_success_rate_allowed_diff`
+11. `pass_epa_per_play_diff`
+12. `home_turnover_forced_rate`
+13. `home_avg_air_yards`
+14. `home_tackle_for_loss_rate`
+15. `home_yards_per_rush`
+16. `home_avg_yac`
+17. `turnover_rate_diff`
+18. `home_def_yards_allowed_per_rush`
+19. `away_rush_epa_per_play`
+20. `home_avg_xpass`
 
-The historical walk-forward routine, by contrast, explicitly recalculates and selects the **top 20 features** using only the seasons available before each test year.
+The historical walk-forward routine also selects the **top 20 features** inside each training window using only the seasons available before the test year. This keeps feature selection from looking into the future.
 
 ---
 
@@ -569,16 +588,16 @@ Feature reduction improves Ridge MAE from 12.715 to 10.030, showing that a small
 
 ## Final 2024–2025 Holdout Test
 
-As noted earlier, the executed final holdout code uses the first five Random Forest-ranked features when constructing the final Ridge pipeline.
+The final holdout model uses **Top 20 Random Forest-selected features with Ridge Regression**, matching the feature-selection rule chosen on the 2023 validation season.
 
 The executed holdout results are:
 
 | Method | MAE | RMSE | R² |
 |---|---:|---:|---:|
-| Final executed Ridge model | **9.774** | **12.465** | **0.256** |
+| Top 20 RF Features + Ridge Regression | **9.762** | **12.480** | **0.254** |
 | Sportsbook Baseline | 9.804 | 12.531 | 0.248 |
 
-The model improves MAE by approximately **0.03 points per game**. The improvement is small, but the model also has slightly better RMSE and R² in the holdout.
+The model improves MAE by approximately **0.04 points per game** and also has a slightly better RMSE and R². The improvement is small, but it shows the final reduced-feature model was slightly more accurate than the sportsbook baseline on the 2024–2025 holdout.
 
 This result reinforces an important distinction: the sportsbook remains very difficult to improve upon in overall margin prediction, so the project's betting analysis focuses on whether the model's strongest disagreements with the market are more useful than its average prediction.
 
@@ -674,21 +693,21 @@ This demonstrates one of the main conclusions of the project: the model does not
 
 ## Retrospective Final-Model Diagnostic
 
-The final executed five-feature Ridge pipeline is also refit using all 2010–2025 data and applied back to each season.
+The final **20-feature Ridge pipeline** is also refit using all 2010–2025 data and applied back to each season.
 
 This is intentionally an **in-sample retrospective diagnostic**, not a valid out-of-sample performance estimate.
 
 At a 2.5-point threshold, the retrospective backcast produces:
 
-- 106 bets
-- 60 wins
-- 41 losses
-- 5 pushes
-- approximately **+$1,699 profit**
-- approximately **16.0% ROI**
-- positive profit in **11 of 16 seasons**
+- 199 bets
+- 111 wins
+- 78 losses
+- 10 pushes
+- approximately **+$2,873 profit**
+- approximately **14.4% ROI**
+- positive profit in **10 of 16 seasons**
 
-Average yearly model MAE is approximately **10.095**, compared with **10.108** for the sportsbook.
+Average yearly model MAE is approximately **10.086**, compared with **10.108** for the sportsbook.
 
 Because the same seasons were used to train and evaluate this version, these results are expected to be optimistic. The walk-forward results are the more defensible historical performance estimate.
 
@@ -710,24 +729,31 @@ The model-development phase produced several major findings:
 
 # 6. Application of the Trained Models
 
-A Streamlit application is the next planned stage of the project.
+The trained model has been deployed as a Streamlit web application.
 
-**Application development has not yet been completed, so this section documents the intended role of the application without claiming functionality that has not yet been implemented.**
+Application link:
 
-The application is expected to provide an interface through which a user can interact with the trained NFL spread-prediction workflow. The final design will be determined after the Streamlit implementation is completed.
+https://umbc-data606-capstone-nfl-spread-prediction.streamlit.app/
 
-Potential functionality includes:
+The application turns the final **Top 20 Random Forest-selected features + Ridge Regression** model into an interactive workflow. The deployed app loads the saved production model, the 2024–2025 holdout games, the walk-forward threshold results, and the scenario-performance tables created by the modeling notebook.
 
-- loading the saved trained model,
-- displaying the model's predicted home margin,
-- displaying the sportsbook expected home margin,
-- calculating the model edge,
-- showing whether the edge clears a selected betting threshold,
-- presenting relevant model and game information in a simple interface.
+The application includes three main sections:
 
-The application should clearly distinguish a model prediction from a recommendation and should preserve the project's conclusion that the model is best treated as a selective analytical tool rather than a guaranteed betting system.
+1. **Historical Holdout Explorer**
+   - Allows a user to select a 2024 or 2025 holdout game.
+   - Uses that game's saved pregame feature values from the processed dataset.
+   - Displays the sportsbook expected home margin, model-predicted home margin, model edge, and actual final margin.
+   - Applies the selected edge threshold and shows whether the simulated strategy would bet home, bet away, or make no bet.
 
-This report section should be updated after the Streamlit application is completed and deployed.
+2. **Walk-Forward Results**
+   - Displays the historical threshold backtest results.
+   - Shows how bet volume, win rate, profit, and ROI changed as the minimum model edge increased.
+   - Reinforces the main finding that the model worked better when it was more selective.
+
+3. **About the Model**
+   - Summarizes the final model design, training period, holdout period, prediction target, evaluation metrics, and the final 20 selected features.
+
+The app is intended as a capstone demonstration and decision-support tool. It does not claim to guarantee future betting performance. Its purpose is to show how the trained model can be used to compare model predictions against the sportsbook line and identify historical situations where the model produced larger market disagreements.
 
 ---
 
@@ -752,7 +778,8 @@ The project:
 - simulated $100 spread bets using actual spread prices,
 - performed season-by-season walk-forward testing,
 - evaluated multiple betting thresholds,
-- analyzed performance in different game situations.
+- analyzed performance in different game situations,
+- deployed a Streamlit application for interactive model exploration.
 
 ## Answers to the Research Questions
 
@@ -772,7 +799,7 @@ The sportsbook is an extremely strong baseline.
 
 On 2023 validation data, the sportsbook MAE is **9.818**, better than every full-feature machine-learning model.
 
-The executed final Ridge holdout model produces **9.774 MAE** on 2024–2025, compared with **9.804** for the sportsbook. This is a very small improvement.
+The executed final Top 20 Ridge holdout model produces **9.762 MAE** on 2024–2025, compared with **9.804** for the sportsbook. This is a very small improvement.
 
 The main value of the ML workflow therefore appears to come from selective disagreement with the market rather than a large improvement in average game prediction.
 
@@ -837,9 +864,9 @@ The project uses the sportsbook line available in nflverse but does not model op
 
 Testing multiple models, feature sets, thresholds, and situations creates a risk of finding patterns that occurred by chance. Walk-forward testing reduces this risk, but situational findings still require future confirmation.
 
-### Final Holdout Feature-Count Implementation
+### Feature-Selection Consistency
 
-The validation experiment identifies the top-20 Ridge configuration as best, while the executed final holdout code uses the first five ranked features. The report distinguishes these workflows so the results remain reproducible.
+The final holdout and walk-forward workflows now use the same general approach: Random Forest feature ranking followed by a 20-feature Ridge Regression model. The fixed holdout uses the 20 features selected from the original training-period feature screen, while the walk-forward test recalculates the top 20 features inside each historical training window to avoid future leakage.
 
 ### Retrospective Backcast
 
@@ -857,15 +884,14 @@ The full-history backcast is in sample and should not be used as evidence of exp
 
 ## Future Research and Improvements
 
-1. Build and deploy the **Streamlit application**.
+1. Expand the deployed **Streamlit application** to support future-season or current-week data once new pregame features are available.
 2. Add more detailed **quarterback and injury information**.
 3. Add explicit starting-quarterback changes and player-availability adjustments.
 4. Capture and model **opening versus closing spread movement**.
 5. Test a model that directly predicts **probability of covering the spread**.
 6. Calibrate cover probabilities and compare expected value rather than relying only on point-edge thresholds.
 7. Continue testing whether away-favorite and other situational results remain stable on future seasons.
-8. Standardize the final feature-selection rule so validation, holdout, and walk-forward workflows use the same number of selected features.
-9. Update this report with the final Streamlit URL, application screenshots, presentation link, and YouTube link.
+8. Add final presentation and YouTube links after those files are finalized.
 
 The overall conclusion is that the model is most useful as a **selective screening tool**. The sportsbook remains the strongest general benchmark, but the walk-forward analysis shows that larger model-market disagreements and certain game situations may contain more useful historical signals than betting every game.
 
@@ -897,7 +923,10 @@ The overall conclusion is that the model is most useful as a **selective screeni
 8. Streamlit. **Streamlit Documentation**.  
    https://docs.streamlit.io/
 
-9. Wayland, Ben. **UMBC DATA606 Capstone GitHub Repository**.  
+9. Wayland, Ben. **Deployed NFL Spread Prediction Streamlit Application**.  
+   https://umbc-data606-capstone-nfl-spread-prediction.streamlit.app/
+
+10. Wayland, Ben. **UMBC DATA606 Capstone GitHub Repository**.  
    https://github.com/bwayland1/UMBC-DATA606-Capstone
 
 ## Data Dictionary
