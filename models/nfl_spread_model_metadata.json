@@ -1,0 +1,55 @@
+{
+  "features": [
+    "market_home_margin",
+    "explosive_pass_rate_diff",
+    "def_pass_success_allowed_diff",
+    "home_offensive_plays",
+    "rush_success_rate_diff",
+    "away_def_rush_success_allowed",
+    "away_avg_cpoe",
+    "home_defensive_plays",
+    "avg_cpoe_diff",
+    "def_success_rate_allowed_diff",
+    "pass_epa_per_play_diff",
+    "home_turnover_forced_rate",
+    "home_avg_air_yards",
+    "home_tackle_for_loss_rate",
+    "home_yards_per_rush",
+    "home_avg_yac",
+    "turnover_rate_diff",
+    "home_def_yards_allowed_per_rush",
+    "away_rush_epa_per_play",
+    "home_avg_xpass"
+  ],
+  "target": "home_margin",
+  "model_name": "Top 20 RF Features + Ridge Regression",
+  "training_period": "2010-2023",
+  "holdout_period": "2024-2025",
+  "ridge_alpha": 1.0,
+  "default_edge_threshold": 3.5,
+  "holdout_metrics": {
+    "mae": 9.762025437141682,
+    "rmse": 12.48035993361171,
+    "r2": 0.25381157691809786,
+    "sportsbook_mae": 9.8037109375,
+    "sportsbook_rmse": 12.531425341666047,
+    "sportsbook_r2": 0.24769278359811153
+  },
+  "walk_forward_summary": {
+    "2.5": {
+      "bets": 749,
+      "win_rate": 0.526,
+      "roi": 0.028
+    },
+    "3.5": {
+      "bets": 402,
+      "win_rate": 0.542,
+      "roi": 0.059
+    }
+  },
+  "python_version": "3.12.13",
+  "sklearn_version": "1.6.1",
+  "pandas_version": "2.2.2",
+  "numpy_version": "2.0.2",
+  "joblib_version": "1.5.3"
+}
