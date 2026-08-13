@@ -30,7 +30,7 @@ https://docs.google.com/presentation/d/175UoxAa7GC80K6G5Bn4PiiSU_QNvXSVc/edit?us
 
 ## YouTube Presentation
 
-**To be added after the final presentation video is recorded and uploaded.**
+https://youtu.be/G6ZBn3uyDaQ
 
 ---
 
